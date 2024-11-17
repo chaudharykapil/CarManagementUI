@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import axios from 'axios'
 import { BASE_API_URL } from '../../utils/CONSTANTS'
-
+import { ErrorMessagetoast, SuccessMessagetoast } from '../components/Messagetoast';
 
 
 export default function NewProductModal({open,setOpen}) {
@@ -11,6 +11,7 @@ export default function NewProductModal({open,setOpen}) {
     transmission:"Manual",
     fuelType:"Petrol/CNG",
   })
+  const [messagetoast,showmessageToast] = useState(null)
   const submitForm = async()=>{
     console.log(formData)
     let data = new FormData()
@@ -26,10 +27,22 @@ export default function NewProductModal({open,setOpen}) {
     Array.from(formData?.images||[]).forEach((image, index) => {
         data.append('images', image);
     });
-    const res = await axios.post(BASE_API_URL+"/cars",data,{
-        headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    console.log(res)
+    try{
+        const res = await axios.post(BASE_API_URL+"/cars",data,{
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
+        showmessageToast(<SuccessMessagetoast message={res.data?.message} handleclose={()=>showmessageToast(null)} />)
+    }
+    catch(e){
+        const erromsg = e.response?.data?.error || ""
+        console.log(erromsg)
+        showmessageToast(<ErrorMessagetoast message={erromsg} handleclose={()=>showmessageToast(null)} />)
+    }
+    finally{
+        setOpen()
+        window.location.reload()
+    }
+
   }  
   return (
     <Dialog open={open} onClose={setOpen} className="relative z-[50]">
@@ -124,6 +137,7 @@ export default function NewProductModal({open,setOpen}) {
           </DialogPanel>
         </div>
       </div>
+      {messagetoast}
     </Dialog>
   )
 }

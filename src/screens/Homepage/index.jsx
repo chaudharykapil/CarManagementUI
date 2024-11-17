@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import {useNavigate} from "react-router-dom"
 import ProductCard from './productCard'
 import car1 from  "../../assets/car1.jpg"
 import NewProductModal from '../NewProduct'
@@ -7,8 +8,13 @@ import axios from "axios";
 import { BASE_API_URL } from '../../utils/CONSTANTS'
 export default function HomePage() {
   const userid = window.localStorage.getItem("userid")
+  const navigate = useNavigate()
+  if(!userid){
+    navigate("/login")
+  }
   const [isnewproductOpen,OpenNewProductModel] = useState(false)
   const [isshowproduct,OpenShowProductModel] = useState(false)
+  const [currentCar,setCurrentCar] = useState(null)
   const [carData,setCarData] = useState([])
   const getCars = async()=>{
     try {
@@ -16,28 +22,42 @@ export default function HomePage() {
         params: { user_id: userid },
       });
       console.log('Cars:', response.data);
+
       return response.data;
     } catch (error) {
       console.error('Error fetching cars:', error.response.data);
-      throw error;
+      throw error
+    }
+  }
+  const handleDeleteCar = async(car_id)=>{
+    console.log(car_id)
+    try {
+      const response = await axios.delete(`${BASE_API_URL}/cars/${car_id}`);
+      console.log('Car deleted:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting car:', error.response.data);
+    }
+    finally{
+      OpenShowProductModel(false)
     }
   }
   useEffect(()=>{
-    
+    getCars().then(d=>{
+      setCarData(d)
+    },err=>{
+      console.log(err)
+    })
   },[])
   return (
     <>
     <div className='grid grid-cols-3 gap-y-8 m-10'>
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
-      <ProductCard image = {car1} showProduct = {()=>OpenShowProductModel(!isshowproduct)} />
+      {carData.map((car,idx)=><ProductCard data = {car} index = {idx} showProduct = {(i)=>{
+        setCurrentCar(carData[i])
+        OpenShowProductModel(!isshowproduct)
+      }} />)
+      
+      }
     </div>
     
         <button
@@ -53,7 +73,7 @@ export default function HomePage() {
           <span>Add</span>
         </button>
         <NewProductModal open={isnewproductOpen} setOpen={OpenNewProductModel} />
-        <ShowProductModal open={isshowproduct} setOpen={OpenShowProductModel} image={car1} />
+        {currentCar ? <ShowProductModal open={isshowproduct} setOpen={OpenShowProductModel} data = {currentCar} handleDelete={handleDeleteCar} />:null}
     </>
   )
 }

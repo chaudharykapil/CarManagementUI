@@ -23,8 +23,6 @@ export default function SignupPage() {
         finally{
             setisLoading(false)
         }
-        
-        
     }
   return (
     <div className='flex justify-center items-center h-screen'>
