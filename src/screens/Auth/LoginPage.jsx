@@ -4,6 +4,7 @@ import axios from "axios";
 import { BASE_API_URL } from '../../utils/CONSTANTS';
 import { useNavigate } from "react-router-dom";
 import { ErrorMessagetoast, SuccessMessagetoast } from '../components/Messagetoast';
+import NavBar from '../components/NavBar';
 export default function LoginPage() {
     const navigator = useNavigate()
     const [formData,setFormData] = useState({})
@@ -37,6 +38,8 @@ export default function LoginPage() {
         
     }
   return (
+    <>
+    <NavBar />
     <div className='flex justify-center items-center h-screen'>
         <section class="flex flex-col items-center w-1/2 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-3xl  dark:border-gray-700 dark:bg-gray-800 ">
             <img class="object-cover w-[40%] rounded-t-lg h-[30rem]  md:rounded-none md:rounded-s-lg" src={carbg} alt=""/>
@@ -85,5 +88,6 @@ export default function LoginPage() {
         </section>
         {messagetoast}
     </div>
+    </>
   )
 }

@@ -3,6 +3,7 @@ import carbg from "../../assets/carbg2.jpg"
 import axios from "axios";
 import { BASE_API_URL } from '../../utils/CONSTANTS';
 import { ErrorMessagetoast, SuccessMessagetoast } from '../components/Messagetoast';
+import NavBar from '../components/NavBar';
 export default function SignupPage() {
     const [formData,setFormData] = useState({})
     const [isloading,setisLoading] = useState(false)
@@ -25,6 +26,8 @@ export default function SignupPage() {
         }
     }
   return (
+    <>
+    <NavBar />
     <div className='flex justify-center items-center h-screen'>
         <section class="flex flex-col items-center w-1/2 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-3xl  dark:border-gray-700 dark:bg-gray-800 ">
             <img class="object-cover w-[40%] rounded-t-lg h-[30rem]  md:rounded-none md:rounded-s-lg" src={carbg} alt=""/>
@@ -67,5 +70,6 @@ export default function SignupPage() {
         </section>
         {messagetoast}
     </div>
+    </>
   )
 }

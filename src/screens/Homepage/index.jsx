@@ -6,6 +6,8 @@ import NewProductModal from '../NewProduct'
 import ShowProductModal from '../ShowProduct'
 import axios from "axios";
 import { BASE_API_URL } from '../../utils/CONSTANTS'
+import EditProductModal from '../EditProduct'
+import NavBar from '../components/NavBar'
 export default function HomePage() {
   const userid = window.localStorage.getItem("userid")
   const navigate = useNavigate()
@@ -14,8 +16,11 @@ export default function HomePage() {
   }
   const [isnewproductOpen,OpenNewProductModel] = useState(false)
   const [isshowproduct,OpenShowProductModel] = useState(false)
+  const [iseditproduct,OpenEditProductModel] = useState(false)
+  const [currentEditcar,SetcurrentEditcar] = useState(null)
   const [currentCar,setCurrentCar] = useState(null)
   const [carData,setCarData] = useState([])
+  
   const getCars = async()=>{
     try {
       const response = await axios.get(`${BASE_API_URL}/cars`, {
@@ -29,6 +34,24 @@ export default function HomePage() {
       throw error
     }
   }
+  const handleSearch = async (keyword) => {
+    console.log(keyword)
+    if (!keyword.trim()) {
+      setError('Please enter a keyword to search.');
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${BASE_API_URL}/cars/search`, {
+        params: { keyword:keyword.trim(),user_id:userid },
+      });
+      console.log(response.data)
+      setCarData(response.data)
+    }
+    catch (err) {
+      console.log(err)
+    }
+  };
   const handleDeleteCar = async(car_id)=>{
     console.log(car_id)
     try {
@@ -42,6 +65,12 @@ export default function HomePage() {
       OpenShowProductModel(false)
     }
   }
+  const handleEditCar = (data)=>{
+    console.log(data)
+    SetcurrentEditcar(data)
+    OpenShowProductModel(false)
+    OpenEditProductModel(true)
+  }
   useEffect(()=>{
     getCars().then(d=>{
       setCarData(d)
@@ -51,6 +80,7 @@ export default function HomePage() {
   },[])
   return (
     <>
+    <NavBar handSearch={handleSearch} />
     <div className='grid grid-cols-3 gap-y-8 m-10'>
       {carData.map((car,idx)=><ProductCard data = {car} index = {idx} showProduct = {(i)=>{
         setCurrentCar(carData[i])
@@ -73,7 +103,8 @@ export default function HomePage() {
           <span>Add</span>
         </button>
         <NewProductModal open={isnewproductOpen} setOpen={OpenNewProductModel} />
-        {currentCar ? <ShowProductModal open={isshowproduct} setOpen={OpenShowProductModel} data = {currentCar} handleDelete={handleDeleteCar} />:null}
+        {currentCar ? <ShowProductModal open={isshowproduct} setOpen={OpenShowProductModel} data = {currentCar} handleDelete={handleDeleteCar} handleEdit={handleEditCar} />:null}
+        {currentEditcar ? <EditProductModal open={iseditproduct} setOpen={OpenEditProductModel} currdata = {currentEditcar} />:null}
     </>
   )
 }

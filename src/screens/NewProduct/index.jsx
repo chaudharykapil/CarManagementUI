@@ -5,7 +5,6 @@ import axios from 'axios'
 import { BASE_API_URL } from '../../utils/CONSTANTS'
 import { ErrorMessagetoast, SuccessMessagetoast } from '../components/Messagetoast';
 
-
 export default function NewProductModal({open,setOpen}) {
   const [formData,setFormdata] = useState({
     transmission:"Manual",

@@ -5,7 +5,6 @@ import ImageSlider from '../Homepage/imageSlider'
 import { BASE_API_URL } from '../../utils/CONSTANTS'
 
 export default function ShowProductModal({open,setOpen,data,handleDelete,handleEdit}) {
-    console.log(data)
     const [currimg,setcurrimg] = useState(`${BASE_API_URL}${data?.images[0]}`)
     return (
         <Dialog open={open} onClose={setOpen} className="relative z-[50] ">
@@ -24,7 +23,7 @@ export default function ShowProductModal({open,setOpen,data,handleDelete,handleE
                         {data.name}
                     </h3>
                     <div className='gap-x-2'>
-                    <button type="button" onClick={()=>{handleEdit(data.car_id)}} class="text-black  focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-gray-800 dark:hover:bg-gray-900 dark:focus:ring-gray-900">
+                    <button type="button" onClick={()=>{handleEdit(data)}} class="text-black  focus:ring-4 focus:outline-none focus:ring-white font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-gray-800 dark:hover:bg-gray-900 dark:focus:ring-gray-900">
                     <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M12.3 3.7l4 4L4 20H0v-4L12.3 3.7zm1.4-1.4L16 0l4 4-2.3 2.3-4-4z"/></svg>
                         Edit
                     </button>
