@@ -41,7 +41,7 @@ export default function ShowProductModal({open,setOpen,data,handleDelete,handleE
                         <img class="h-auto max-w-full rounded-lg" src={currimg} alt="" />
                     </div>
                     <div class="flex flex-row gap-4 overflow-x-scroll">
-                        {data.images.map((image,idx)=><img class="w-40 cursor-pointer rounded-lg object-cover" onClick={(ev)=>setcurrimg(ev.target.src)} src={`${BASE_API_URL}${image}`} alt="" />)}
+                        {data.images.map((image,idx)=><img class="w-40 cursor-pointer rounded-lg object-cover" onClick={(ev)=>setcurrimg(ev.target.src)} src={`${image}`} alt="" />)}
                     </div>
                 </div>
                 <div class="block max-w-full px-6 py-4 my-5 bg-white border border-gray-200 rounded-lg shadow  dark:bg-gray-800 dark:border-gray-700">
